@@ -1,141 +1,88 @@
-// Import Section 
 import java.util.*;
 
-// Student class
-class Student {
-    private int id;
-    private String name;
-    private double marks;
+//Book class
+class Book {
+    int id;
+    String title;
+    boolean isIssued;
 
-    // Constructor
-    public Student(int id, String name, double marks) {
+    Book(int id, String title) {
         this.id = id;
-        this.name = name;
-        this.marks = marks;
+        this.title = title;
+        this.isIssued = false;
     }
 
-    // Getters and Setters
-    public int getId() {
-        return id;
-    }
-    public void setName(String name) {
-        this.name = name;  //this keyword to specify the variable to there own object 
-    }
-    public void setMarks(double marks) {
-        this.marks = marks;
-    }
-
-    // To display student details to string is used 
     public String toString() {
-        return "ID: " + id + ", Name: " + name + ", Marks: " + marks;
+        return id + " - " + title + (isIssued ? " (Issued)" : " (Available)");
+    }
+}
+
+// User class
+class User {
+    int userId;
+    String name;
+
+    User(int userId, String name) {
+        this.userId = userId;
+        this.name = name;
+    }
+}
+
+// Library class
+class Library {
+    List<Book> books = new ArrayList<>();
+
+    void addBook(Book book) {
+        books.add(book);
+    }
+
+    void showBooks() {
+        for (Book b : books) {
+            System.out.println(b);
+        }
+    }
+
+    void issueBook(int bookId, User user) {
+        for (Book b : books) {
+            if (b.id == bookId && !b.isIssued) {
+                b.isIssued = true;
+                System.out.println("Book \"" + b.title + "\" issued to " + user.name);
+                return;
+            }
+        }
+        System.out.println("Book not available!");
+    }
+
+    void returnBook(int bookId, User user) {
+        for (Book b : books) {
+            if (b.id == bookId && b.isIssued) {
+                b.isIssued = false;
+                System.out.println("Book \"" + b.title + "\" returned by " + user.name);
+                return;
+            }
+        }
+        System.out.println("Invalid return request!");
     }
 }
 
 // Main class
-public class StudentApp {
-    private static List<Student> studentList = new ArrayList<>();
-    private static Scanner sc = new Scanner(System.in);
-
-    // Add Student
-    public static void addStudent() {
-        System.out.print("Enter ID: ");
-        int id = sc.nextInt();
-        sc.nextLine(); 
-        System.out.print("Enter Name: ");
-        String name = sc.nextLine();
-        System.out.print("Enter Marks: ");
-        double marks = sc.nextDouble();
-
-        studentList.add(new Student(id, name, marks));
-        System.out.println(" Student Added Successfully!\n");
-    }
-
-    // View Students
-    public static void viewStudents() {
-        if (studentList.isEmpty()) {
-            System.out.println("No students found!\n");
-            return;
-        }
-        System.out.println("\n ------------ Student List -----------");
-        for (Student s : studentList) {
-            System.out.println(s);
-        }
-        System.out.println();
-    }
-
-    // Update Student
-    public static void updateStudent() {
-        System.out.print("Enter ID to Update: ");
-        int id = sc.nextInt();
-        boolean f = false;
-
-        for (Student s : studentList) {
-            if (s.getId() == id) {
-                sc.nextLine(); 
-                System.out.print("Enter New Name: ");
-                String name = sc.nextLine();
-                System.out.print("Enter New Marks: ");
-                double marks = sc.nextDouble();
-
-                s.setName(name);
-                s.setMarks(marks);
-                System.out.println(" Student Updated Successfully!\n");
-                f = true;
-                break;
-            }
-        }
-        if (!f) {
-            System.out.println(" Student ID Not Found!\n");
-        }
-    }
-
-    // Delete Student
-    public static void deleteStudent() {
-        System.out.print("Enter ID to Delete: ");
-        int id = sc.nextInt();
-        boolean removed =studentList.removeIf(s -> s.getId() == id);
-
-        if (removed) {
-            System.out.println(" Student Deleted Successfully!\n");
-        } else {
-            System.out.println(" Student ID Not Found!\n");
-        }
-    }
-
-    // Main Menu
+public class LibrarySystem {
     public static void main(String[] args) {
-        int choice;
-        int flag = 1;
-        while(flag ==1){
-            System.out.println("===== Student Management System =====");
-            System.out.println("1. Add Student");
-            System.out.println("2. View Students");
-            System.out.println("3. Update Student");
-            System.out.println("4. Delete Student");
-            System.out.println("5. Exit");
-            System.out.print("Enter Choice: ");
-            choice = sc.nextInt();
+        Library library = new Library();
 
-            switch (choice) {
-                case 1:
-                 addStudent();
-                 break;
-                case 2: 
-                 viewStudents();
-                 break;
-                case 3: 
-                 updateStudent();
-                 break;
-                case 4:
-                 deleteStudent();
-                 break;
-                case 5:
-                 flag =0;
-                 System.out.println(" Exiting... ");
-                 break;
-                default:
-                 System.out.println(" Invalid Choice! Try Again./n");
-            }
-        } 
+     
+        library.addBook(new Book(1, "Physics"));
+        library.addBook(new Book(2, "Dynamic Lecture"));
+        library.addBook(new Book(3, "Psychology Of Money"));
+
+        
+        User user1 = new User(101, "Alice");
+
+        library.showBooks();
+        library.issueBook(2, user1);
+        library.showBooks();
+        library.returnBook(2, user1);
+        library.showBooks();
     }
 }
+
